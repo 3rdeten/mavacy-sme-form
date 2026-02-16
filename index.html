@@ -1224,6 +1224,11 @@
       document.querySelectorAll('input, select, textarea').forEach(el => {
         if (el.id) data[el.id] = el.value;
       });
+      // Also save the current step position with the form data
+      if (currentStep > 0) {
+        data._currentStep = currentStep;
+        data._maxStep = getMaxReachedStep();
+      }
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       } catch(e) { /* storage full or unavailable */ }
@@ -1235,13 +1240,21 @@
         if (!raw) return false;
         const data = JSON.parse(raw);
         let hasData = false;
-        Object.keys(data).forEach(id => {
-          const el = document.getElementById(id);
-          if (el && data[id]) {
-            el.value = data[id];
+        Object.keys(data).forEach(key => {
+          if (key === '_currentStep' || key === '_maxStep') return;
+          const el = document.getElementById(key);
+          if (el && data[key]) {
+            el.value = data[key];
             hasData = true;
           }
         });
+        // Restore step position
+        if (data._currentStep) {
+          localStorage.setItem('mavacy_sme_current_step', data._currentStep.toString());
+        }
+        if (data._maxStep) {
+          localStorage.setItem('mavacy_sme_max_step', data._maxStep.toString());
+        }
         return hasData;
       } catch(e) { return false; }
     }
@@ -1257,6 +1270,11 @@
     // Clear border on input
     document.querySelectorAll('[required]').forEach(f => {
       f.addEventListener('input', () => { f.style.borderColor = ''; });
+    });
+
+    // Save on tab close / navigate away
+    window.addEventListener('beforeunload', () => {
+      saveToStorage();
     });
 
     // ─── Init ────────────────────────────────────────────────
