@@ -474,63 +474,9 @@
       margin: 0;
     }
 
-    /* Preview panel */
-    .preview-panel {
-      display: none;
-      background: var(--mavacy-white);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--mavacy-border);
-      overflow: hidden;
-      margin-top: 1.5rem;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .preview-panel.visible {
-      display: block;
-    }
-
-    .preview-header {
-      background: var(--mavacy-navy);
-      color: var(--mavacy-white);
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .preview-header h3 {
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    .preview-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .preview-actions .btn {
-      padding: 0.4rem 1rem;
-      font-size: 0.85rem;
-    }
-
-    .preview-content {
-      padding: 1.5rem;
-      max-height: 600px;
-      overflow-y: auto;
-    }
-
-    .preview-content pre {
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-      font-size: 0.85rem;
-      line-height: 1.7;
-      color: var(--mavacy-dark-gray);
-      background: #f8fafc;
-      padding: 1.25rem;
-      border-radius: var(--radius);
-      border: 1px solid var(--mavacy-border);
+    /* Submitting spinner */
+    .btn-primary:disabled {
+      opacity: 0.7;
     }
 
     /* Completion screen */
@@ -906,36 +852,25 @@
     <div class="completion-screen" id="completionScreen">
       <div class="completion-card">
         <div class="check-icon">&#x2713;</div>
-        <h2>All done!</h2>
-        <p>Your expertise has been captured. Generate the markdown file below, then download or copy it to share with the team.</p>
+        <h2>Ready to submit!</h2>
+        <p>You've completed all 8 sections. Review your answers if you'd like, then hit Submit to send your expertise to the Mavacy team.</p>
 
         <div class="completion-actions">
-          <button class="btn btn-primary" onclick="generateMarkdown()">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
-            Generate Markdown
+          <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+            Submit
           </button>
           <button class="btn btn-outline" onclick="goToStep(1)">Review Answers</button>
         </div>
       </div>
+    </div>
 
-      <!-- Preview Panel -->
-      <div class="preview-panel" id="previewPanel">
-        <div class="preview-header">
-          <h3>Generated Markdown</h3>
-          <div class="preview-actions">
-            <button class="btn btn-success" onclick="downloadMarkdown()">
-              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download .md
-            </button>
-            <button class="btn btn-secondary" onclick="copyMarkdown()" style="background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.3);">
-              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-              Copy
-            </button>
-          </div>
-        </div>
-        <div class="preview-content">
-          <pre id="markdownOutput"></pre>
-        </div>
+    <!-- Thank you screen (shown after successful submission) -->
+    <div class="completion-screen" id="thankYouScreen">
+      <div class="completion-card">
+        <div class="check-icon" style="background:rgba(72,187,120,0.15);">&#x2713;</div>
+        <h2>Thank you!</h2>
+        <p>Your expertise has been submitted to the Mavacy team. We'll review it and integrate it into our knowledge system. If we have follow-up questions, we'll reach out.</p>
       </div>
     </div>
 
@@ -1106,113 +1041,65 @@
       setTimeout(() => toast.classList.remove('show'), duration);
     }
 
-    // ─── Helper: format text block ──────────────────────────
-    function formatBlock(text) {
-      if (!text || !text.trim()) return '';
-      return text.trim();
-    }
+    // ─── Submit to Google Apps Script ───────────────────────
+    const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbxNFUjEBoT13ecSRoB35sn-dffTiBz5iA6k2o4yWsdr5SW2q181Gwwyf2tKhW6znreAYA/exec';
 
-    // ─── Helper: build list from text ───────────────────────
-    function textToList(text) {
-      if (!text || !text.trim()) return '';
-      const lines = text.trim().split('\n').filter(l => l.trim());
-      return lines.map(l => {
-        const cleaned = l.replace(/^[-\u2022*]\s*/, '').trim();
-        return '- ' + cleaned;
-      }).join('\n');
-    }
+    function submitForm() {
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span>Submitting...</span>';
 
-    // ─── Generate Markdown ──────────────────────────────────
-    function generateMarkdown() {
+      // Collect all form field values
       const v = (id) => document.getElementById(id).value.trim();
-      const layerMap = {
-        'matter': 'Matter',
-        'subtype': 'Subtype',
-        'subject_matter': 'Subject Matter / Industry',
-        'general': 'General / Cross-cutting'
+      const data = {
+        expertName: v('expertName'),
+        expertTitle: v('expertTitle'),
+        expertEmail: v('expertEmail'),
+        knowledgeLayer: v('knowledgeLayer'),
+        expertiseArea: v('expertiseArea'),
+        experienceYears: v('experienceYears'),
+        scope: v('scope'),
+        triggers: v('triggers'),
+        principles: v('principles'),
+        methodology: v('methodology'),
+        keyTerms: v('keyTerms'),
+        checklist: v('checklist'),
+        procedures: v('procedures'),
+        templates: v('templates'),
+        mistakes: v('mistakes'),
+        redFlags: v('redFlags'),
+        jurisdictional: v('jurisdictional'),
+        quality: v('quality'),
+        clientComm: v('clientComm'),
+        statutes: v('statutes'),
+        resources: v('resources'),
+        additional: v('additional')
       };
 
-      const area = v('expertiseArea');
-      const layer = layerMap[v('knowledgeLayer')] || v('knowledgeLayer');
-      const now = new Date().toISOString().split('T')[0];
+      fetch(SUBMIT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        // Clear saved data after successful submission
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem('mavacy_sme_current_step');
+          localStorage.removeItem('mavacy_sme_max_step');
+        } catch(e) {}
 
-      let md = '';
-
-      md += `# ${area} \u2014 ${layer} Knowledge\n\n`;
-
-      md += `> **Contributed by:** ${v('expertName')}`;
-      if (v('expertTitle')) md += ` (${v('expertTitle')})`;
-      md += `\n`;
-      if (v('experienceYears')) md += `> **Experience:** ${v('experienceYears')}\n`;
-      md += `> **Date:** ${now}\n`;
-      if (v('expertEmail')) md += `> **Contact:** ${v('expertEmail')}\n`;
-      md += `> **Knowledge layer:** ${layer}\n`;
-      md += '\n---\n\n';
-
-      md += `## Scope\n\n${formatBlock(v('scope'))}\n\n`;
-      md += `## When to Use This Knowledge\n\n${formatBlock(v('triggers'))}\n\n`;
-      md += `## Key Principles & Considerations\n\n${formatBlock(v('principles'))}\n\n`;
-      md += `## Standard Approach / Methodology\n\n${formatBlock(v('methodology'))}\n\n`;
-
-      if (v('keyTerms')) md += `## Key Terms & Definitions\n\n${formatBlock(v('keyTerms'))}\n\n`;
-
-      md += `## Checklist \u2014 Always Verify\n\n${textToList(v('checklist'))}\n\n`;
-
-      if (v('procedures')) md += `## Standard Procedures & Required Filings\n\n${formatBlock(v('procedures'))}\n\n`;
-      if (v('templates')) md += `## Standard Documents & Templates\n\n${formatBlock(v('templates'))}\n\n`;
-
-      md += `## Common Mistakes & Oversights\n\n${formatBlock(v('mistakes'))}\n\n`;
-      md += `## Red Flags & Risk Areas\n\n${formatBlock(v('redFlags'))}\n\n`;
-
-      if (v('jurisdictional')) md += `## Jurisdictional Considerations\n\n${formatBlock(v('jurisdictional'))}\n\n`;
-      if (v('quality')) md += `## What Separates Excellent Work\n\n${formatBlock(v('quality'))}\n\n`;
-      if (v('clientComm')) md += `## Client Communication Priorities\n\n${formatBlock(v('clientComm'))}\n\n`;
-      if (v('statutes')) md += `## Key Authorities & Regulations\n\n${formatBlock(v('statutes'))}\n\n`;
-      if (v('resources')) md += `## Resources & References\n\n${formatBlock(v('resources'))}\n\n`;
-      if (v('additional')) md += `## Additional Expert Knowledge\n\n${formatBlock(v('additional'))}\n\n`;
-
-      md += `---\n\n`;
-      md += `*Generated via Mavacy SME Knowledge Transfer on ${now}. Review and integrate into the appropriate knowledge folder before use.*\n`;
-
-      document.getElementById('markdownOutput').textContent = md;
-      const panel = document.getElementById('previewPanel');
-      panel.classList.add('visible');
-      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      window._generatedMarkdown = md;
-      window._fileName = area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '.md';
-
-      showToast('Markdown generated! Review below.');
-    }
-
-    // ─── Download ───────────────────────────────────────────
-    function downloadMarkdown() {
-      if (!window._generatedMarkdown) return;
-      const blob = new Blob([window._generatedMarkdown], { type: 'text/markdown' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = window._fileName || 'sme-knowledge.md';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast('Downloaded ' + (window._fileName || 'sme-knowledge.md'));
-    }
-
-    // ─── Copy ───────────────────────────────────────────────
-    function copyMarkdown() {
-      if (!window._generatedMarkdown) return;
-      navigator.clipboard.writeText(window._generatedMarkdown).then(() => {
-        showToast('Copied to clipboard!');
-      }).catch(() => {
-        const ta = document.createElement('textarea');
-        ta.value = window._generatedMarkdown;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        showToast('Copied to clipboard!');
+        // Show thank you screen
+        document.getElementById('completionScreen').classList.remove('active');
+        document.getElementById('thankYouScreen').classList.add('active');
+        document.getElementById('stepProgress').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22,2 15,22 11,13 2,9"/></svg> Submit';
+        showToast('Something went wrong. Please try again.', 5000);
       });
     }
 
