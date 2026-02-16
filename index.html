@@ -41,7 +41,7 @@
     .header {
       background: linear-gradient(135deg, var(--mavacy-navy) 0%, var(--mavacy-blue) 100%);
       color: var(--mavacy-white);
-      padding: 2.5rem 1.5rem;
+      padding: 2rem 1.5rem;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -59,14 +59,14 @@
     }
 
     .header h1 {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
       position: relative;
     }
 
     .header p {
-      font-size: 1rem;
+      font-size: 0.95rem;
       opacity: 0.85;
       max-width: 640px;
       margin: 0 auto;
@@ -84,7 +84,7 @@
       letter-spacing: 0.05em;
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
     /* Layout */
@@ -94,8 +94,8 @@
       padding: 2rem 1.5rem 4rem;
     }
 
-    /* Progress bar */
-    .progress-bar {
+    /* Step progress */
+    .step-progress {
       background: var(--mavacy-white);
       border-radius: var(--radius-lg);
       padding: 1.25rem 1.5rem;
@@ -104,27 +104,66 @@
       border: 1px solid var(--mavacy-border);
     }
 
-    .progress-bar .label {
+    .step-progress .step-label {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-size: 0.85rem;
       color: var(--mavacy-gray);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
     }
 
-    .progress-bar .track {
+    .step-progress .step-label strong {
+      color: var(--mavacy-navy);
+      font-weight: 600;
+    }
+
+    .step-progress .track {
       background: var(--mavacy-border);
       height: 6px;
       border-radius: 3px;
       overflow: hidden;
+      margin-bottom: 0.75rem;
     }
 
-    .progress-bar .fill {
+    .step-progress .fill {
       background: linear-gradient(90deg, var(--mavacy-accent), var(--mavacy-blue));
       height: 100%;
       border-radius: 3px;
       transition: width 0.4s ease;
       width: 0%;
+    }
+
+    .step-dots {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 0.25rem;
+    }
+
+    .step-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--mavacy-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--mavacy-gray);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .step-dot.active {
+      background: var(--mavacy-accent);
+      color: var(--mavacy-white);
+      box-shadow: 0 2px 8px rgba(66,153,225,0.4);
+    }
+
+    .step-dot.completed {
+      background: var(--mavacy-success);
+      color: var(--mavacy-white);
     }
 
     /* Sections */
@@ -135,11 +174,17 @@
       margin-bottom: 1.5rem;
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--mavacy-border);
-      transition: box-shadow 0.2s ease;
+      display: none;
+      animation: fadeIn 0.3s ease;
     }
 
-    .section:hover {
-      box-shadow: var(--shadow-md);
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .section-header {
@@ -246,12 +291,23 @@
       color: #e53e3e;
     }
 
-    /* Buttons */
-    .actions {
+    /* Navigation buttons */
+    .nav-buttons {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
       gap: 1rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
+    }
+
+    .nav-buttons .left {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .nav-buttons .right {
+      display: flex;
+      gap: 0.75rem;
     }
 
     .btn {
@@ -298,10 +354,124 @@
       background: #38a169;
     }
 
+    .btn-outline {
+      background: transparent;
+      color: var(--mavacy-gray);
+      border: 1.5px solid var(--mavacy-border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--mavacy-gray);
+      color: var(--mavacy-dark-gray);
+    }
+
     .btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
+    }
+
+    .btn-save-exit {
+      background: transparent;
+      color: var(--mavacy-gray);
+      border: 1.5px solid var(--mavacy-border);
+      font-size: 0.85rem;
+      padding: 0.6rem 1.25rem;
+    }
+
+    .btn-save-exit:hover {
+      border-color: var(--mavacy-gray);
+      color: var(--mavacy-dark-gray);
+    }
+
+    /* Welcome screen */
+    .welcome-screen {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .welcome-screen.active {
+      display: block;
+    }
+
+    .welcome-card {
+      background: var(--mavacy-white);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--mavacy-border);
+      text-align: center;
+    }
+
+    .welcome-card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--mavacy-navy);
+    }
+
+    .welcome-card p {
+      font-size: 0.95rem;
+      color: var(--mavacy-dark-gray);
+      max-width: 540px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .welcome-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
+      text-align: left;
+    }
+
+    .welcome-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--mavacy-light);
+      border-radius: var(--radius);
+    }
+
+    .welcome-feature .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(66,153,225,0.1);
+      color: var(--mavacy-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
+    .welcome-feature .text {
+      font-size: 0.85rem;
+      color: var(--mavacy-dark-gray);
+    }
+
+    .welcome-feature .text strong {
+      display: block;
+      color: var(--mavacy-navy);
+      margin-bottom: 0.15rem;
+      font-size: 0.9rem;
+    }
+
+    .welcome-resume {
+      background: linear-gradient(135deg, #ebf8ff 0%, #f0fff4 100%);
+      border: 1px solid #bee3f8;
+      border-radius: var(--radius);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      display: none;
+      text-align: center;
+    }
+
+    .welcome-resume p {
+      font-size: 0.9rem;
+      color: var(--mavacy-blue);
+      margin: 0;
     }
 
     /* Preview panel */
@@ -312,7 +482,8 @@
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--mavacy-border);
       overflow: hidden;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
+      animation: fadeIn 0.3s ease;
     }
 
     .preview-panel.visible {
@@ -362,6 +533,58 @@
       border: 1px solid var(--mavacy-border);
     }
 
+    /* Completion screen */
+    .completion-screen {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .completion-screen.active {
+      display: block;
+    }
+
+    .completion-card {
+      background: var(--mavacy-white);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--mavacy-border);
+      text-align: center;
+    }
+
+    .completion-card .check-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(72,187,120,0.1);
+      color: var(--mavacy-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      font-size: 2rem;
+    }
+
+    .completion-card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      color: var(--mavacy-navy);
+    }
+
+    .completion-card p {
+      font-size: 0.95rem;
+      color: var(--mavacy-dark-gray);
+      max-width: 480px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .completion-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
     /* Toast notification */
     .toast {
       position: fixed;
@@ -384,49 +607,26 @@
       opacity: 1;
     }
 
-    /* Intro card */
-    .intro-card {
-      background: linear-gradient(135deg, #ebf8ff 0%, #f0fff4 100%);
-      border: 1px solid #bee3f8;
-      border-radius: var(--radius-lg);
-      padding: 1.5rem 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .intro-card h3 {
-      font-size: 1rem;
-      color: var(--mavacy-blue);
-      margin-bottom: 0.5rem;
-    }
-
-    .intro-card p {
-      font-size: 0.9rem;
-      color: var(--mavacy-dark-gray);
-    }
-
-    .intro-card ul {
-      margin-top: 0.5rem;
-      padding-left: 1.25rem;
-      font-size: 0.9rem;
-      color: var(--mavacy-dark-gray);
-    }
-
-    .intro-card li {
-      margin-bottom: 0.25rem;
-    }
-
     /* Responsive */
     @media (max-width: 640px) {
-      .header h1 { font-size: 1.35rem; }
+      .header h1 { font-size: 1.25rem; }
+      .header { padding: 1.5rem 1rem; }
       .container { padding: 1.25rem 1rem 3rem; }
       .section { padding: 1.5rem; }
-      .actions { flex-direction: column; }
+      .welcome-card { padding: 1.5rem; }
+      .welcome-features { grid-template-columns: 1fr; }
+      .nav-buttons { flex-direction: column; }
+      .nav-buttons .left, .nav-buttons .right { width: 100%; }
+      .nav-buttons .left { order: 2; }
+      .nav-buttons .right { order: 1; }
       .btn { width: 100%; justify-content: center; }
+      .completion-actions { flex-direction: column; align-items: center; }
+      .step-dot { width: 24px; height: 24px; font-size: 0.7rem; }
     }
 
     /* Print styles */
     @media print {
-      .header, .progress-bar, .actions, .preview-actions, .toast { display: none; }
+      .header, .step-progress, .nav-buttons, .preview-actions, .toast, .welcome-screen, .completion-actions { display: none; }
       .preview-panel { box-shadow: none; border: none; }
     }
   </style>
@@ -436,35 +636,73 @@
   <div class="header">
     <div class="badge">Mavacy Knowledge System</div>
     <h1>Subject Matter Expert Knowledge Transfer</h1>
-    <p>Help us capture your expertise. Your answers will be transformed into structured knowledge that powers Mavacy's AI-assisted legal drafting system.</p>
+    <p>Help us capture your expertise. Your answers will power Mavacy's AI-assisted legal drafting system.</p>
   </div>
 
   <div class="container">
 
-    <div class="progress-bar">
-      <div class="label">
-        <span>Progress</span>
-        <span id="progressPercent">0%</span>
+    <!-- Step progress bar -->
+    <div class="step-progress" id="stepProgress" style="display:none;">
+      <div class="step-label">
+        <span><strong id="stepTitle">Step 1 of 8</strong></span>
+        <span id="stepPercent">0%</span>
       </div>
       <div class="track">
-        <div class="fill" id="progressFill"></div>
+        <div class="fill" id="stepFill"></div>
+      </div>
+      <div class="step-dots" id="stepDots"></div>
+    </div>
+
+    <!-- Welcome screen -->
+    <div class="welcome-screen active" id="welcomeScreen">
+      <div class="welcome-card">
+        <h2>Welcome</h2>
+        <p>We're going to walk through 8 short sections to capture your expertise. It takes about 15-20 minutes, and you can save your progress and come back anytime.</p>
+
+        <div class="welcome-features">
+          <div class="welcome-feature">
+            <div class="icon">1</div>
+            <div class="text">
+              <strong>One section at a time</strong>
+              No information overload &mdash; just answer what's in front of you.
+            </div>
+          </div>
+          <div class="welcome-feature">
+            <div class="icon">&#x1f4be;</div>
+            <div class="text">
+              <strong>Auto-saves your progress</strong>
+              Close the tab anytime. Your answers will be here when you come back.
+            </div>
+          </div>
+          <div class="welcome-feature">
+            <div class="icon">&#x2713;</div>
+            <div class="text">
+              <strong>No wrong answers</strong>
+              We want how <em>you</em> think about this area of law.
+            </div>
+          </div>
+          <div class="welcome-feature">
+            <div class="icon">&#x1f4c4;</div>
+            <div class="text">
+              <strong>Download when done</strong>
+              Get a clean file to share with the team.
+            </div>
+          </div>
+        </div>
+
+        <div class="welcome-resume" id="welcomeResume">
+          <p>You have saved progress from a previous session. Pick up where you left off.</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="startForm()" id="startBtn">Get Started</button>
       </div>
     </div>
 
-    <div class="intro-card">
-      <h3>How this works</h3>
-      <p>Answer the questions below based on your area of expertise. There are no wrong answers &mdash; we're capturing how <em>you</em> think about this area of law. When you're done:</p>
-      <ul>
-        <li>Click <strong>Generate Markdown</strong> to see the formatted output</li>
-        <li>Review it, then <strong>Download</strong> or <strong>Copy</strong> to share with the team</li>
-        <li>The team will review and integrate your knowledge into the system</li>
-      </ul>
-    </div>
-
+    <!-- Form -->
     <form id="smeForm" autocomplete="off">
 
       <!-- Section 1: Expert Info -->
-      <div class="section" data-section="1">
+      <div class="section" data-step="1">
         <div class="section-header">
           <div class="section-number">1</div>
           <h2>About You</h2>
@@ -509,7 +747,7 @@
       </div>
 
       <!-- Section 2: Scope & Application -->
-      <div class="section" data-section="2">
+      <div class="section" data-step="2">
         <div class="section-header">
           <div class="section-number">2</div>
           <h2>Scope &amp; Application</h2>
@@ -528,7 +766,7 @@
       </div>
 
       <!-- Section 3: Core Knowledge -->
-      <div class="section" data-section="3">
+      <div class="section" data-step="3">
         <div class="section-header">
           <div class="section-number">3</div>
           <h2>Core Knowledge</h2>
@@ -552,7 +790,7 @@
       </div>
 
       <!-- Section 4: Checklists & Procedures -->
-      <div class="section" data-section="4">
+      <div class="section" data-step="4">
         <div class="section-header">
           <div class="section-number">4</div>
           <h2>Checklists &amp; Procedures</h2>
@@ -576,7 +814,7 @@
       </div>
 
       <!-- Section 5: Pitfalls, Risks & Jurisdictional Issues -->
-      <div class="section" data-section="5">
+      <div class="section" data-step="5">
         <div class="section-header">
           <div class="section-number">5</div>
           <h2>Pitfalls, Risks &amp; Jurisdictional Issues</h2>
@@ -600,7 +838,7 @@
       </div>
 
       <!-- Section 6: Quality & Client Communication -->
-      <div class="section" data-section="6">
+      <div class="section" data-step="6">
         <div class="section-header">
           <div class="section-number">6</div>
           <h2>Quality &amp; Client Communication</h2>
@@ -619,7 +857,7 @@
       </div>
 
       <!-- Section 7: References & Resources -->
-      <div class="section" data-section="7">
+      <div class="section" data-step="7">
         <div class="section-header">
           <div class="section-number">7</div>
           <h2>References &amp; Resources</h2>
@@ -638,7 +876,7 @@
       </div>
 
       <!-- Section 8: Additional Knowledge -->
-      <div class="section" data-section="8">
+      <div class="section" data-step="8">
         <div class="section-header">
           <div class="section-number">8</div>
           <h2>Anything Else</h2>
@@ -651,35 +889,53 @@
         </div>
       </div>
 
-      <!-- Actions -->
-      <div class="actions">
-        <button type="button" class="btn btn-primary" id="generateBtn" onclick="generateMarkdown()">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
-          Generate Markdown
-        </button>
-        <button type="button" class="btn btn-secondary" onclick="clearForm()">
-          Clear Form
-        </button>
-      </div>
     </form>
 
-    <!-- Preview Panel -->
-    <div class="preview-panel" id="previewPanel">
-      <div class="preview-header">
-        <h3>Generated Markdown</h3>
-        <div class="preview-actions">
-          <button class="btn btn-success" onclick="downloadMarkdown()">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download .md
+    <!-- Navigation buttons (outside form to prevent submit) -->
+    <div class="nav-buttons" id="navButtons" style="display:none;">
+      <div class="left">
+        <button class="btn btn-outline" id="backBtn" onclick="goBack()">Back</button>
+        <button class="btn btn-save-exit" onclick="saveAndExit()">Save &amp; Exit</button>
+      </div>
+      <div class="right">
+        <button class="btn btn-primary" id="nextBtn" onclick="goNext()">Save &amp; Continue</button>
+      </div>
+    </div>
+
+    <!-- Completion screen -->
+    <div class="completion-screen" id="completionScreen">
+      <div class="completion-card">
+        <div class="check-icon">&#x2713;</div>
+        <h2>All done!</h2>
+        <p>Your expertise has been captured. Generate the markdown file below, then download or copy it to share with the team.</p>
+
+        <div class="completion-actions">
+          <button class="btn btn-primary" onclick="generateMarkdown()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+            Generate Markdown
           </button>
-          <button class="btn btn-secondary" onclick="copyMarkdown()" style="background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.3);">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-            Copy
-          </button>
+          <button class="btn btn-outline" onclick="goToStep(1)">Review Answers</button>
         </div>
       </div>
-      <div class="preview-content">
-        <pre id="markdownOutput"></pre>
+
+      <!-- Preview Panel -->
+      <div class="preview-panel" id="previewPanel">
+        <div class="preview-header">
+          <h3>Generated Markdown</h3>
+          <div class="preview-actions">
+            <button class="btn btn-success" onclick="downloadMarkdown()">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download .md
+            </button>
+            <button class="btn btn-secondary" onclick="copyMarkdown()" style="background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.3);">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+        </div>
+        <div class="preview-content">
+          <pre id="markdownOutput"></pre>
+        </div>
       </div>
     </div>
 
@@ -688,38 +944,144 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ─── Progress tracking ───────────────────────────────────
-    const requiredFields = document.querySelectorAll('[required]');
-    const progressFill = document.getElementById('progressFill');
-    const progressPercent = document.getElementById('progressPercent');
+    // ─── State ───────────────────────────────────────────────
+    const TOTAL_STEPS = 8;
+    let currentStep = 0; // 0 = welcome screen
+    const sections = document.querySelectorAll('.section[data-step]');
+    const SECTION_NAMES = [
+      '', 'About You', 'Scope & Application', 'Core Knowledge',
+      'Checklists & Procedures', 'Pitfalls & Risks',
+      'Quality & Communication', 'References', 'Anything Else'
+    ];
 
-    function updateProgress() {
-      let filled = 0;
-      requiredFields.forEach(f => {
-        if (f.value.trim()) filled++;
-      });
-      const pct = Math.round((filled / requiredFields.length) * 100);
-      progressFill.style.width = pct + '%';
-      progressPercent.textContent = pct + '%';
+    // ─── Build step dots ─────────────────────────────────────
+    const dotsContainer = document.getElementById('stepDots');
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'step-dot';
+      dot.textContent = i;
+      dot.onclick = () => {
+        // Allow clicking to completed steps or the next available step
+        if (i <= getMaxReachedStep()) goToStep(i);
+      };
+      dotsContainer.appendChild(dot);
     }
 
-    requiredFields.forEach(f => {
-      f.addEventListener('input', updateProgress);
-      f.addEventListener('change', updateProgress);
-    });
-
-    // ─── Toast notifications ─────────────────────────────────
-    function showToast(message, duration = 3000) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), duration);
+    function getMaxReachedStep() {
+      // Allow navigation to any step they've visited
+      const saved = localStorage.getItem('mavacy_sme_max_step');
+      return saved ? Math.max(parseInt(saved), currentStep) : currentStep;
     }
 
-    // ─── Validation ──────────────────────────────────────────
-    function validateForm() {
+    function saveMaxStep() {
+      const prev = parseInt(localStorage.getItem('mavacy_sme_max_step') || '0');
+      if (currentStep > prev) {
+        localStorage.setItem('mavacy_sme_max_step', currentStep.toString());
+      }
+    }
+
+    // ─── Navigation ──────────────────────────────────────────
+    function startForm() {
+      const savedStep = parseInt(localStorage.getItem('mavacy_sme_current_step') || '1');
+      goToStep(savedStep);
+    }
+
+    function goToStep(step) {
+      // Validate current step's required fields before advancing
+      if (currentStep > 0 && step > currentStep && !validateCurrentStep()) return;
+
+      saveToStorage();
+      currentStep = step;
+      saveMaxStep();
+      localStorage.setItem('mavacy_sme_current_step', step.toString());
+
+      // Hide everything
+      document.getElementById('welcomeScreen').classList.remove('active');
+      document.getElementById('completionScreen').classList.remove('active');
+      sections.forEach(s => s.classList.remove('active'));
+
+      if (step > TOTAL_STEPS) {
+        // Show completion screen
+        document.getElementById('completionScreen').classList.add('active');
+        document.getElementById('navButtons').style.display = 'none';
+        document.getElementById('stepProgress').style.display = 'block';
+        updateStepUI(TOTAL_STEPS);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // Show step
+      const section = document.querySelector(`.section[data-step="${step}"]`);
+      if (section) section.classList.add('active');
+
+      // Show nav and progress
+      document.getElementById('stepProgress').style.display = 'block';
+      document.getElementById('navButtons').style.display = 'flex';
+
+      // Update buttons
+      document.getElementById('backBtn').style.display = step === 1 ? 'none' : '';
+      document.getElementById('nextBtn').textContent = step === TOTAL_STEPS ? 'Finish' : 'Save & Continue';
+
+      updateStepUI(step);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Focus first input in this step
+      const firstInput = section.querySelector('input, select, textarea');
+      if (firstInput) setTimeout(() => firstInput.focus(), 350);
+    }
+
+    function goNext() {
+      if (!validateCurrentStep()) return;
+      saveToStorage();
+      showToast('Saved!', 1500);
+      goToStep(currentStep + 1);
+    }
+
+    function goBack() {
+      saveToStorage();
+      if (currentStep > 1) goToStep(currentStep - 1);
+    }
+
+    function saveAndExit() {
+      saveToStorage();
+      showToast('Progress saved! You can close this tab and come back anytime.', 5000);
+    }
+
+    // ─── Step UI updates ─────────────────────────────────────
+    function updateStepUI(step) {
+      const displayStep = Math.min(step, TOTAL_STEPS);
+      const pct = Math.round((displayStep / TOTAL_STEPS) * 100);
+
+      document.getElementById('stepTitle').textContent = step > TOTAL_STEPS
+        ? 'Complete!'
+        : `Step ${displayStep} of ${TOTAL_STEPS} \u2014 ${SECTION_NAMES[displayStep]}`;
+      document.getElementById('stepPercent').textContent = pct + '%';
+      document.getElementById('stepFill').style.width = pct + '%';
+
+      // Update dots
+      const maxReached = getMaxReachedStep();
+      const dots = dotsContainer.children;
+      for (let i = 0; i < dots.length; i++) {
+        const dotStep = i + 1;
+        dots[i].className = 'step-dot';
+        if (dotStep === displayStep) {
+          dots[i].classList.add('active');
+        } else if (dotStep < displayStep || dotStep <= maxReached) {
+          dots[i].classList.add('completed');
+        }
+        dots[i].style.cursor = dotStep <= maxReached ? 'pointer' : 'default';
+      }
+    }
+
+    // ─── Validation (per step) ───────────────────────────────
+    function validateCurrentStep() {
+      const section = document.querySelector(`.section[data-step="${currentStep}"]`);
+      if (!section) return true;
+
+      const required = section.querySelectorAll('[required]');
       let valid = true;
-      requiredFields.forEach(f => {
+
+      required.forEach(f => {
         if (!f.value.trim()) {
           f.style.borderColor = '#e53e3e';
           valid = false;
@@ -727,13 +1089,21 @@
           f.style.borderColor = '';
         }
       });
+
       if (!valid) {
-        showToast('Please fill in all required fields.');
-        // Scroll to first invalid field
-        const first = document.querySelector('[required]:invalid, [required][style*="border-color: rgb(229, 62, 62)"]');
+        showToast('Please fill in the required fields before continuing.');
+        const first = section.querySelector('[required][style*="border-color: rgb(229, 62, 62)"]');
         if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
       return valid;
+    }
+
+    // ─── Toast notifications ─────────────────────────────────
+    function showToast(message, duration = 3000) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), duration);
     }
 
     // ─── Helper: format text block ──────────────────────────
@@ -747,15 +1117,13 @@
       if (!text || !text.trim()) return '';
       const lines = text.trim().split('\n').filter(l => l.trim());
       return lines.map(l => {
-        const cleaned = l.replace(/^[-•*]\s*/, '').trim();
+        const cleaned = l.replace(/^[-\u2022*]\s*/, '').trim();
         return '- ' + cleaned;
       }).join('\n');
     }
 
     // ─── Generate Markdown ──────────────────────────────────
     function generateMarkdown() {
-      if (!validateForm()) return;
-
       const v = (id) => document.getElementById(id).value.trim();
       const layerMap = {
         'matter': 'Matter',
@@ -770,10 +1138,8 @@
 
       let md = '';
 
-      // Title
-      md += `# ${area} — ${layer} Knowledge\n\n`;
+      md += `# ${area} \u2014 ${layer} Knowledge\n\n`;
 
-      // Metadata
       md += `> **Contributed by:** ${v('expertName')}`;
       if (v('expertTitle')) md += ` (${v('expertTitle')})`;
       md += `\n`;
@@ -783,99 +1149,36 @@
       md += `> **Knowledge layer:** ${layer}\n`;
       md += '\n---\n\n';
 
-      // Scope
-      md += `## Scope\n\n`;
-      md += `${formatBlock(v('scope'))}\n\n`;
+      md += `## Scope\n\n${formatBlock(v('scope'))}\n\n`;
+      md += `## When to Use This Knowledge\n\n${formatBlock(v('triggers'))}\n\n`;
+      md += `## Key Principles & Considerations\n\n${formatBlock(v('principles'))}\n\n`;
+      md += `## Standard Approach / Methodology\n\n${formatBlock(v('methodology'))}\n\n`;
 
-      // When to use
-      md += `## When to Use This Knowledge\n\n`;
-      md += `${formatBlock(v('triggers'))}\n\n`;
+      if (v('keyTerms')) md += `## Key Terms & Definitions\n\n${formatBlock(v('keyTerms'))}\n\n`;
 
-      // Core principles
-      md += `## Key Principles & Considerations\n\n`;
-      md += `${formatBlock(v('principles'))}\n\n`;
+      md += `## Checklist \u2014 Always Verify\n\n${textToList(v('checklist'))}\n\n`;
 
-      // Methodology
-      md += `## Standard Approach / Methodology\n\n`;
-      md += `${formatBlock(v('methodology'))}\n\n`;
+      if (v('procedures')) md += `## Standard Procedures & Required Filings\n\n${formatBlock(v('procedures'))}\n\n`;
+      if (v('templates')) md += `## Standard Documents & Templates\n\n${formatBlock(v('templates'))}\n\n`;
 
-      // Key terms (optional)
-      if (v('keyTerms')) {
-        md += `## Key Terms & Definitions\n\n`;
-        md += `${formatBlock(v('keyTerms'))}\n\n`;
-      }
+      md += `## Common Mistakes & Oversights\n\n${formatBlock(v('mistakes'))}\n\n`;
+      md += `## Red Flags & Risk Areas\n\n${formatBlock(v('redFlags'))}\n\n`;
 
-      // Checklist
-      md += `## Checklist — Always Verify\n\n`;
-      md += `${textToList(v('checklist'))}\n\n`;
+      if (v('jurisdictional')) md += `## Jurisdictional Considerations\n\n${formatBlock(v('jurisdictional'))}\n\n`;
+      if (v('quality')) md += `## What Separates Excellent Work\n\n${formatBlock(v('quality'))}\n\n`;
+      if (v('clientComm')) md += `## Client Communication Priorities\n\n${formatBlock(v('clientComm'))}\n\n`;
+      if (v('statutes')) md += `## Key Authorities & Regulations\n\n${formatBlock(v('statutes'))}\n\n`;
+      if (v('resources')) md += `## Resources & References\n\n${formatBlock(v('resources'))}\n\n`;
+      if (v('additional')) md += `## Additional Expert Knowledge\n\n${formatBlock(v('additional'))}\n\n`;
 
-      // Procedures (optional)
-      if (v('procedures')) {
-        md += `## Standard Procedures & Required Filings\n\n`;
-        md += `${formatBlock(v('procedures'))}\n\n`;
-      }
-
-      // Templates (optional)
-      if (v('templates')) {
-        md += `## Standard Documents & Templates\n\n`;
-        md += `${formatBlock(v('templates'))}\n\n`;
-      }
-
-      // Common mistakes
-      md += `## Common Mistakes & Oversights\n\n`;
-      md += `${formatBlock(v('mistakes'))}\n\n`;
-
-      // Red flags
-      md += `## Red Flags & Risk Areas\n\n`;
-      md += `${formatBlock(v('redFlags'))}\n\n`;
-
-      // Jurisdictional (optional)
-      if (v('jurisdictional')) {
-        md += `## Jurisdictional Considerations\n\n`;
-        md += `${formatBlock(v('jurisdictional'))}\n\n`;
-      }
-
-      // Quality (optional)
-      if (v('quality')) {
-        md += `## What Separates Excellent Work\n\n`;
-        md += `${formatBlock(v('quality'))}\n\n`;
-      }
-
-      // Client communication (optional)
-      if (v('clientComm')) {
-        md += `## Client Communication Priorities\n\n`;
-        md += `${formatBlock(v('clientComm'))}\n\n`;
-      }
-
-      // Statutes (optional)
-      if (v('statutes')) {
-        md += `## Key Authorities & Regulations\n\n`;
-        md += `${formatBlock(v('statutes'))}\n\n`;
-      }
-
-      // Resources (optional)
-      if (v('resources')) {
-        md += `## Resources & References\n\n`;
-        md += `${formatBlock(v('resources'))}\n\n`;
-      }
-
-      // Additional (optional)
-      if (v('additional')) {
-        md += `## Additional Expert Knowledge\n\n`;
-        md += `${formatBlock(v('additional'))}\n\n`;
-      }
-
-      // Footer
       md += `---\n\n`;
       md += `*Generated via Mavacy SME Knowledge Transfer on ${now}. Review and integrate into the appropriate knowledge folder before use.*\n`;
 
-      // Show preview
       document.getElementById('markdownOutput').textContent = md;
       const panel = document.getElementById('previewPanel');
       panel.classList.add('visible');
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      // Store for download/copy
       window._generatedMarkdown = md;
       window._fileName = area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '.md';
 
@@ -903,7 +1206,6 @@
       navigator.clipboard.writeText(window._generatedMarkdown).then(() => {
         showToast('Copied to clipboard!');
       }).catch(() => {
-        // Fallback
         const ta = document.createElement('textarea');
         ta.value = window._generatedMarkdown;
         document.body.appendChild(ta);
@@ -912,17 +1214,6 @@
         document.body.removeChild(ta);
         showToast('Copied to clipboard!');
       });
-    }
-
-    // ─── Clear form ─────────────────────────────────────────
-    function clearForm() {
-      if (!confirm('Clear all answers? This cannot be undone.')) return;
-      document.getElementById('smeForm').reset();
-      document.getElementById('previewPanel').classList.remove('visible');
-      window._generatedMarkdown = null;
-      updateProgress();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      showToast('Form cleared.');
     }
 
     // ─── Auto-save to localStorage ──────────────────────────
@@ -941,16 +1232,18 @@
     function loadFromStorage() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
+        if (!raw) return false;
         const data = JSON.parse(raw);
+        let hasData = false;
         Object.keys(data).forEach(id => {
           const el = document.getElementById(id);
           if (el && data[id]) {
             el.value = data[id];
+            hasData = true;
           }
         });
-        updateProgress();
-      } catch(e) { /* corrupt data */ }
+        return hasData;
+      } catch(e) { return false; }
     }
 
     // Auto-save every 5 seconds
@@ -961,12 +1254,20 @@
       el.addEventListener('change', saveToStorage);
     });
 
-    // Load saved data on page load
+    // Clear border on input
+    document.querySelectorAll('[required]').forEach(f => {
+      f.addEventListener('input', () => { f.style.borderColor = ''; });
+    });
+
+    // ─── Init ────────────────────────────────────────────────
     window.addEventListener('DOMContentLoaded', () => {
-      loadFromStorage();
+      const hasData = loadFromStorage();
+      if (hasData) {
+        document.getElementById('welcomeResume').style.display = 'block';
+        document.getElementById('startBtn').textContent = 'Continue Where You Left Off';
+      }
     });
   </script>
 
 </body>
 </html>
-
