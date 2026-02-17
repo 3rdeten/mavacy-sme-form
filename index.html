@@ -291,6 +291,98 @@
       color: #e53e3e;
     }
 
+    /* Checkbox groups */
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 400;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.75rem;
+      border: 1.5px solid var(--mavacy-border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 0;
+    }
+
+    .checkbox-group label:hover {
+      border-color: var(--mavacy-accent);
+      background: rgba(66,153,225,0.03);
+    }
+
+    .checkbox-group label.checked {
+      border-color: var(--mavacy-accent);
+      background: rgba(66,153,225,0.06);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--mavacy-accent);
+      flex-shrink: 0;
+    }
+
+    .subtypes-container {
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .subtypes-container.visible {
+      display: block;
+    }
+
+    .subtype-section {
+      margin-bottom: 1rem;
+    }
+
+    .subtype-section-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--mavacy-blue);
+      margin-bottom: 0.4rem;
+      padding-left: 0.25rem;
+    }
+
+    .checkbox-group.subtypes {
+      grid-template-columns: 1fr;
+    }
+
+    input[type="url"] {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--mavacy-border);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--mavacy-navy);
+      background: var(--mavacy-white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    input[type="url"]:focus {
+      border-color: var(--mavacy-accent);
+      box-shadow: 0 0 0 3px rgba(66,153,225,0.15);
+    }
+
+    .field-helper {
+      font-size: 0.8rem;
+      color: var(--mavacy-gray);
+      margin-top: 0.35rem;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 640px) {
+      .checkbox-group { grid-template-columns: 1fr; }
+    }
+
     /* Navigation buttons */
     .nav-buttons {
       display: flex;
@@ -581,8 +673,8 @@
 
   <div class="header">
     <div class="badge">Mavacy Knowledge System</div>
-    <h1>Subject Matter Expert Knowledge Transfer</h1>
-    <p>Help us capture your expertise. Your knowledge will help us deliver better legal work, faster.</p>
+    <h1>Expert Knowledge Transfer</h1>
+    <p>Your expertise is invaluable. This tool captures what you know so the firm can deliver better, more consistent legal work across every matter.</p>
   </div>
 
   <div class="container">
@@ -603,7 +695,7 @@
     <div class="welcome-screen active" id="welcomeScreen">
       <div class="welcome-card">
         <h2>Welcome</h2>
-        <p>We're going to walk through 8 short sections to capture your expertise. It takes about 15-20 minutes, and you can save your progress and come back anytime.</p>
+        <p>Your knowledge makes the firm better. We're building a system to preserve what our best people know &mdash; so nothing gets lost when matters get handed off, teams grow, or experts move on. This takes about 15-20 minutes, and you can save your progress and come back anytime.</p>
 
         <div class="welcome-features">
           <div class="welcome-feature">
@@ -671,12 +763,29 @@
         </div>
 
         <div class="field">
-          <label for="expertiseArea" class="required">What is your area of expertise?</label>
-          <input type="text" id="expertiseArea" placeholder="e.g. Corporate law, Tax consulting, Healthcare compliance, Real estate transactions" required>
+          <label class="required">What practice areas does your expertise cover?</label>
+          <p class="field-helper" style="margin-bottom:0.5rem;">Select all that apply.</p>
+          <div class="checkbox-group" id="matterTypes">
+            <label><input type="checkbox" name="matterType" value="Corporate" onchange="toggleMatter(this)"> Corporate</label>
+            <label><input type="checkbox" name="matterType" value="Intellectual Property" onchange="toggleMatter(this)"> Intellectual Property</label>
+            <label><input type="checkbox" name="matterType" value="Litigation" onchange="toggleMatter(this)"> Litigation</label>
+            <label><input type="checkbox" name="matterType" value="Immigration" onchange="toggleMatter(this)"> Immigration</label>
+            <label><input type="checkbox" name="matterType" value="Employment" onchange="toggleMatter(this)"> Employment</label>
+            <label><input type="checkbox" name="matterType" value="Estate Planning" onchange="toggleMatter(this)"> Estate Planning</label>
+            <label><input type="checkbox" name="matterType" value="Real Estate" onchange="toggleMatter(this)"> Real Estate</label>
+            <label><input type="checkbox" name="matterType" value="Tax" onchange="toggleMatter(this)"> Tax</label>
+          </div>
         </div>
 
         <div class="field">
-          <label for="experienceYears">Years of Experience in This Area <span class="hint">(optional)</span></label>
+          <div class="subtypes-container" id="subtypesContainer">
+            <label>Which specific areas? <span class="hint">(optional &mdash; select any that apply)</span></label>
+            <div id="subtypesList"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="experienceYears">Years of Experience <span class="hint">(optional)</span></label>
           <input type="text" id="experienceYears" placeholder="e.g. 15 years">
         </div>
       </div>
@@ -743,8 +852,9 @@
         </div>
 
         <div class="field">
-          <label for="templates">Standard documents, templates, or forms <span class="hint">(optional)</span></label>
-          <textarea id="templates" placeholder="Are there standard documents, template agreements, court forms, or boilerplate language commonly used in this area?"></textarea>
+          <label for="templatesUrl">Link to documents, templates, or forms <span class="hint">(optional)</span></label>
+          <input type="url" id="templatesUrl" placeholder="https://drive.google.com/drive/folders/...">
+          <p class="field-helper">Paste a link to a shared folder (Google Drive, Dropbox, etc.) containing any standard documents, templates, or forms used in this area. Make sure the link is set to "Anyone with the link can view" so we can access it.</p>
         </div>
       </div>
 
@@ -767,8 +877,8 @@
         </div>
 
         <div class="field">
-          <label for="jurisdictional">Jurisdictional considerations <span class="hint">(optional)</span></label>
-          <textarea id="jurisdictional" placeholder="Are there jurisdiction-specific rules, variations, or requirements? Any states or jurisdictions with notably different approaches?"></textarea>
+          <label for="jurisdictional" class="required">Jurisdictional considerations</label>
+          <textarea id="jurisdictional" placeholder="Are there jurisdiction-specific rules, variations, or requirements? Any states or jurisdictions with notably different approaches?" required></textarea>
         </div>
       </div>
 
@@ -878,6 +988,96 @@
       'Quality & Communication', 'References', 'Anything Else'
     ];
 
+    // ─── Matter → Subtype mapping ────────────────────────────
+    const SUBTYPES = {
+      'Corporate': [
+        'Entity Formation', 'Fundraising', 'Term Sheets', 'M&A / Purchase or Sale of Business',
+        'NDA / Confidentiality', 'Contract Drafting', 'Contract Review',
+        'Stock / Membership Transfer', 'Conversion', 'Dissolution',
+        'Annual Report / Filings', 'Document Signing', 'Corporate Record Books',
+        'Due Diligence', 'Client Memo'
+      ],
+      'Intellectual Property': [
+        'Copyright', 'Patent', 'Trademark', 'Licensing', 'Trade Secret'
+      ],
+      'Litigation': [
+        'ADR (Arbitration / Mediation)', 'Commercial Litigation', 'IP Litigation', 'Breach of Contract'
+      ],
+      'Immigration': [],
+      'Employment': [
+        'Handbook / Workplace Policies', 'Termination / Wage Issues', 'Employment Litigation'
+      ],
+      'Estate Planning': [
+        'Wills & Trusts', 'Probate', 'Trust Litigation', 'Guardianship'
+      ],
+      'Real Estate': [
+        'Commercial Real Estate', 'Leasing'
+      ],
+      'Tax': []
+    };
+
+    // ─── Matter type checkbox logic ──────────────────────────
+    function toggleMatter(checkbox) {
+      checkbox.parentElement.classList.toggle('checked', checkbox.checked);
+      renderSubtypes();
+      saveToStorage();
+    }
+
+    function getSelectedMatters() {
+      return Array.from(document.querySelectorAll('input[name="matterType"]:checked')).map(cb => cb.value);
+    }
+
+    function getSelectedSubtypes() {
+      return Array.from(document.querySelectorAll('input[name="subtype"]:checked')).map(cb => cb.value);
+    }
+
+    function renderSubtypes() {
+      const selected = getSelectedMatters();
+      const container = document.getElementById('subtypesContainer');
+      const list = document.getElementById('subtypesList');
+
+      // Remember previously checked subtypes
+      const prevChecked = getSelectedSubtypes();
+
+      list.innerHTML = '';
+      let hasSubtypes = false;
+
+      selected.forEach(matter => {
+        const subs = SUBTYPES[matter];
+        if (!subs || subs.length === 0) return;
+        hasSubtypes = true;
+
+        const section = document.createElement('div');
+        section.className = 'subtype-section';
+        section.innerHTML = '<div class="subtype-section-title">' + matter + '</div>';
+
+        const group = document.createElement('div');
+        group.className = 'checkbox-group subtypes';
+
+        subs.forEach(sub => {
+          const label = document.createElement('label');
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.name = 'subtype';
+          cb.value = sub;
+          if (prevChecked.includes(sub)) cb.checked = true;
+          cb.onchange = function() {
+            this.parentElement.classList.toggle('checked', this.checked);
+            saveToStorage();
+          };
+          label.appendChild(cb);
+          label.appendChild(document.createTextNode(' ' + sub));
+          if (cb.checked) label.classList.add('checked');
+          group.appendChild(label);
+        });
+
+        section.appendChild(group);
+        list.appendChild(section);
+      });
+
+      container.classList.toggle('visible', hasSubtypes);
+    }
+
     // ─── Build step dots ─────────────────────────────────────
     const dotsContainer = document.getElementById('stepDots');
     for (let i = 1; i <= TOTAL_STEPS; i++) {
@@ -885,14 +1085,12 @@
       dot.className = 'step-dot';
       dot.textContent = i;
       dot.onclick = () => {
-        // Allow clicking to completed steps or the next available step
         if (i <= getMaxReachedStep()) goToStep(i);
       };
       dotsContainer.appendChild(dot);
     }
 
     function getMaxReachedStep() {
-      // Allow navigation to any step they've visited
       const saved = localStorage.getItem('mavacy_sme_max_step');
       return saved ? Math.max(parseInt(saved), currentStep) : currentStep;
     }
@@ -911,7 +1109,6 @@
     }
 
     function goToStep(step) {
-      // Validate current step's required fields before advancing
       if (currentStep > 0 && step > currentStep && !validateCurrentStep()) return;
 
       saveToStorage();
@@ -919,13 +1116,11 @@
       saveMaxStep();
       localStorage.setItem('mavacy_sme_current_step', step.toString());
 
-      // Hide everything
       document.getElementById('welcomeScreen').classList.remove('active');
       document.getElementById('completionScreen').classList.remove('active');
       sections.forEach(s => s.classList.remove('active'));
 
       if (step > TOTAL_STEPS) {
-        // Show completion screen
         document.getElementById('completionScreen').classList.add('active');
         document.getElementById('navButtons').style.display = 'none';
         document.getElementById('stepProgress').style.display = 'block';
@@ -934,23 +1129,18 @@
         return;
       }
 
-      // Show step
       const section = document.querySelector(`.section[data-step="${step}"]`);
       if (section) section.classList.add('active');
 
-      // Show nav and progress
       document.getElementById('stepProgress').style.display = 'block';
       document.getElementById('navButtons').style.display = 'flex';
-
-      // Update buttons
       document.getElementById('backBtn').style.display = step === 1 ? 'none' : '';
       document.getElementById('nextBtn').textContent = step === TOTAL_STEPS ? 'Finish' : 'Save & Continue';
 
       updateStepUI(step);
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Focus first input in this step
-      const firstInput = section.querySelector('input, select, textarea');
+      const firstInput = section.querySelector('input:not([type="checkbox"]), select, textarea');
       if (firstInput) setTimeout(() => firstInput.focus(), 350);
     }
 
@@ -982,7 +1172,6 @@
       document.getElementById('stepPercent').textContent = pct + '%';
       document.getElementById('stepFill').style.width = pct + '%';
 
-      // Update dots
       const maxReached = getMaxReachedStep();
       const dots = dotsContainer.children;
       for (let i = 0; i < dots.length; i++) {
@@ -1002,10 +1191,10 @@
       const section = document.querySelector(`.section[data-step="${currentStep}"]`);
       if (!section) return true;
 
-      const required = section.querySelectorAll('[required]');
       let valid = true;
 
-      required.forEach(f => {
+      // Check standard required fields
+      section.querySelectorAll('[required]').forEach(f => {
         if (!f.value.trim()) {
           f.style.borderColor = '#e53e3e';
           valid = false;
@@ -1014,10 +1203,24 @@
         }
       });
 
+      // Check matter type checkboxes on step 1
+      if (currentStep === 1) {
+        const matters = getSelectedMatters();
+        if (matters.length === 0) {
+          const group = document.getElementById('matterTypes');
+          group.style.border = '1.5px solid #e53e3e';
+          group.style.borderRadius = 'var(--radius)';
+          group.style.padding = '0.5rem';
+          valid = false;
+        } else {
+          const group = document.getElementById('matterTypes');
+          group.style.border = '';
+          group.style.padding = '';
+        }
+      }
+
       if (!valid) {
         showToast('Please fill in the required fields before continuing.');
-        const first = section.querySelector('[required][style*="border-color: rgb(229, 62, 62)"]');
-        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
       return valid;
     }
@@ -1038,13 +1241,17 @@
       btn.disabled = true;
       btn.innerHTML = '<span>Submitting...</span>';
 
-      // Collect all form field values
-      const v = (id) => document.getElementById(id).value.trim();
+      const v = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : '';
+      };
+
       const data = {
         expertName: v('expertName'),
         expertTitle: v('expertTitle'),
         expertEmail: v('expertEmail'),
-        expertiseArea: v('expertiseArea'),
+        matterTypes: getSelectedMatters(),
+        subtypes: getSelectedSubtypes(),
         experienceYears: v('experienceYears'),
         scope: v('scope'),
         triggers: v('triggers'),
@@ -1053,7 +1260,7 @@
         keyTerms: v('keyTerms'),
         checklist: v('checklist'),
         procedures: v('procedures'),
-        templates: v('templates'),
+        templatesUrl: v('templatesUrl'),
         mistakes: v('mistakes'),
         redFlags: v('redFlags'),
         jurisdictional: v('jurisdictional'),
@@ -1071,14 +1278,12 @@
         body: JSON.stringify(data)
       })
       .then(() => {
-        // Clear saved data after successful submission
         try {
           localStorage.removeItem(STORAGE_KEY);
           localStorage.removeItem('mavacy_sme_current_step');
           localStorage.removeItem('mavacy_sme_max_step');
         } catch(e) {}
 
-        // Show thank you screen
         document.getElementById('completionScreen').classList.remove('active');
         document.getElementById('thankYouScreen').classList.add('active');
         document.getElementById('stepProgress').style.display = 'none';
@@ -1096,17 +1301,21 @@
 
     function saveToStorage() {
       const data = {};
-      document.querySelectorAll('input, select, textarea').forEach(el => {
+      // Save text/select/textarea fields
+      document.querySelectorAll('input:not([type="checkbox"]), select, textarea').forEach(el => {
         if (el.id) data[el.id] = el.value;
       });
-      // Also save the current step position with the form data
+      // Save checkbox selections
+      data._matterTypes = getSelectedMatters();
+      data._subtypes = getSelectedSubtypes();
+      // Save step position
       if (currentStep > 0) {
         data._currentStep = currentStep;
         data._maxStep = getMaxReachedStep();
       }
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      } catch(e) { /* storage full or unavailable */ }
+      } catch(e) {}
     }
 
     function loadFromStorage() {
@@ -1115,14 +1324,40 @@
         if (!raw) return false;
         const data = JSON.parse(raw);
         let hasData = false;
+
         Object.keys(data).forEach(key => {
-          if (key === '_currentStep' || key === '_maxStep') return;
+          if (key.startsWith('_')) return;
           const el = document.getElementById(key);
           if (el && data[key]) {
             el.value = data[key];
             hasData = true;
           }
         });
+
+        // Restore matter type checkboxes
+        if (data._matterTypes && data._matterTypes.length > 0) {
+          hasData = true;
+          data._matterTypes.forEach(val => {
+            const cb = document.querySelector(`input[name="matterType"][value="${val}"]`);
+            if (cb) {
+              cb.checked = true;
+              cb.parentElement.classList.add('checked');
+            }
+          });
+          renderSubtypes();
+
+          // Restore subtype checkboxes after rendering
+          if (data._subtypes && data._subtypes.length > 0) {
+            data._subtypes.forEach(val => {
+              const cb = document.querySelector(`input[name="subtype"][value="${val}"]`);
+              if (cb) {
+                cb.checked = true;
+                cb.parentElement.classList.add('checked');
+              }
+            });
+          }
+        }
+
         // Restore step position
         if (data._currentStep) {
           localStorage.setItem('mavacy_sme_current_step', data._currentStep.toString());
@@ -1136,18 +1371,18 @@
 
     // Auto-save every 5 seconds
     setInterval(saveToStorage, 5000);
-    // Also save on input
-    document.querySelectorAll('input, select, textarea').forEach(el => {
+    // Save on input for text fields
+    document.querySelectorAll('input:not([type="checkbox"]), select, textarea').forEach(el => {
       el.addEventListener('input', saveToStorage);
       el.addEventListener('change', saveToStorage);
     });
 
-    // Clear border on input
+    // Clear border on input for required fields
     document.querySelectorAll('[required]').forEach(f => {
       f.addEventListener('input', () => { f.style.borderColor = ''; });
     });
 
-    // Save on tab close / navigate away
+    // Save on tab close
     window.addEventListener('beforeunload', () => {
       saveToStorage();
     });
