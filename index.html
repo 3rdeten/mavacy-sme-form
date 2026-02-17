@@ -582,7 +582,7 @@
   <div class="header">
     <div class="badge">Mavacy Knowledge System</div>
     <h1>Subject Matter Expert Knowledge Transfer</h1>
-    <p>Help us capture your expertise. Your answers will power Mavacy's AI-assisted legal drafting system.</p>
+    <p>Help us capture your expertise. Your knowledge will help us deliver better legal work, faster.</p>
   </div>
 
   <div class="container">
@@ -630,8 +630,8 @@
           <div class="welcome-feature">
             <div class="icon">&#x1f4c4;</div>
             <div class="text">
-              <strong>Download when done</strong>
-              Get a clean file to share with the team.
+              <strong>Submit when done</strong>
+              Your answers go straight to the Mavacy team.
             </div>
           </div>
         </div>
@@ -671,19 +671,8 @@
         </div>
 
         <div class="field">
-          <label for="knowledgeLayer" class="required">What layer of knowledge are you contributing to?</label>
-          <select id="knowledgeLayer" required>
-            <option value="">Select one...</option>
-            <option value="matter">Matter (e.g. Corporate, Litigation, IP)</option>
-            <option value="subtype">Subtype (e.g. Entity Formation, Trademark, ADR)</option>
-            <option value="subject_matter">Subject Matter / Industry (e.g. Healthcare, Film Tax Credits)</option>
-            <option value="general">General / Cross-cutting expertise</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="expertiseArea" class="required">Specific Area of Expertise</label>
-          <input type="text" id="expertiseArea" placeholder="e.g. Corporate, Entity Formation, Healthcare compliance, IRS 181 tax credits" required>
+          <label for="expertiseArea" class="required">What is your area of expertise?</label>
+          <input type="text" id="expertiseArea" placeholder="e.g. Corporate law, Tax consulting, Healthcare compliance, Real estate transactions" required>
         </div>
 
         <div class="field">
@@ -706,8 +695,8 @@
         </div>
 
         <div class="field">
-          <label for="triggers" class="required">When should this knowledge be used?</label>
-          <textarea id="triggers" placeholder="What triggers or signals indicate that this expertise is needed? What keywords, fact patterns, or client requests should activate this knowledge?" required></textarea>
+          <label for="triggers" class="required">What common situations or client needs does your expertise address?</label>
+          <textarea id="triggers" placeholder="Describe the kinds of situations, problems, or client requests where your expertise comes into play. What typically brings someone to you for help?" required></textarea>
         </div>
       </div>
 
@@ -717,7 +706,7 @@
           <div class="section-number">3</div>
           <h2>Core Knowledge</h2>
         </div>
-        <p class="section-description">The most important things an attorney or AI system should know.</p>
+        <p class="section-description">The most important things someone new to this area should know.</p>
 
         <div class="field">
           <label for="principles" class="required">What are the most important principles, rules, or considerations in this area?</label>
@@ -830,8 +819,8 @@
         <p class="section-description">Catch-all for knowledge that didn't fit above.</p>
 
         <div class="field">
-          <label for="additional">Is there anything else important that an AI-assisted legal drafting system should know about this area?</label>
-          <textarea id="additional" class="large" placeholder="Anything we didn't ask about? War stories, edge cases, things only someone with deep experience would know? This is your chance to share anything that would make the system smarter."></textarea>
+          <label for="additional">Is there anything else we should know about this area?</label>
+          <textarea id="additional" class="large" placeholder="Anything we didn't ask about? War stories, edge cases, things only someone with deep experience would know? This is your chance to share anything else that matters."></textarea>
         </div>
       </div>
 
@@ -1055,7 +1044,6 @@
         expertName: v('expertName'),
         expertTitle: v('expertTitle'),
         expertEmail: v('expertEmail'),
-        knowledgeLayer: v('knowledgeLayer'),
         expertiseArea: v('expertiseArea'),
         experienceYears: v('experienceYears'),
         scope: v('scope'),
